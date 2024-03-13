@@ -9,13 +9,24 @@
 //! the Internet Computer.
 
 use core::fmt;
+
+#[cfg(feature = "alloc")]
 use core::ops::Neg;
 
 use bls12_381::hash_to_curve::{ExpandMsgXmd, HashToCurve};
-use bls12_381::{multi_miller_loop, G1Affine, G1Projective, G2Affine, G2Prepared, Scalar};
-use pairing::group::{Curve, Group};
+#[cfg(feature = "alloc")]
+use bls12_381::{multi_miller_loop, G2Prepared};
+
+use bls12_381::{G1Affine, G1Projective, G2Affine, Scalar};
+use pairing::group::Curve;
+
+#[cfg(feature = "alloc")]
+use pairing::group::Group;
+
+#[cfg(feature = "alloc")]
 use rand::RngCore;
 
+#[cfg(feature = "alloc")]
 lazy_static::lazy_static! {
     static ref G2PREPARED_NEG_G : G2Prepared = G2Affine::generator().neg().into();
 }
@@ -36,6 +47,7 @@ pub struct PublicKey {
     pk: G2Affine,
 }
 
+#[cfg(feature = "alloc")]
 impl fmt::Debug for PublicKey {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "PublicKey({})", hex::encode(self.serialize()))
@@ -81,6 +93,7 @@ impl PublicKey {
         }
     }
 
+    #[cfg(feature = "alloc")]
     /// Verify a BLS signature
     pub fn verify(&self, message: &[u8], signature: &Signature) -> Result<(), ()> {
         let msg = hash_to_g1(message);
@@ -115,6 +128,7 @@ pub struct Signature {
     sig: G1Affine,
 }
 
+#[cfg(feature = "alloc")]
 impl fmt::Debug for Signature {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "Signature({})", hex::encode(self.serialize()))
@@ -182,6 +196,7 @@ impl PrivateKey {
     }
 
     /// Create a new random secret key
+    #[cfg(feature = "alloc")]
     pub fn random() -> Self {
         let mut rng = rand::thread_rng();
 
@@ -235,6 +250,7 @@ impl PrivateKey {
     }
 }
 
+#[cfg(feature = "alloc")]
 /// Verify a BLS signature
 ///
 /// The signature must be exactly 48 bytes (compressed G1 element)
