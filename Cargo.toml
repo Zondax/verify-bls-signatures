@@ -15,7 +15,7 @@ pairing = { version = "0.22" }
 lazy_static = { version = "1", optional = true }
 rand = { version = "0.8.5", default-features = false }
 sha2 = { version = "0.9", default-features = false }
-hex = { version = "0.4", default-features = false }
+hex = { version = "0.4", optional = true }
 
 [features]
 default = ["alloc"]
@@ -27,4 +27,5 @@ alloc = [
     "rand/getrandom",
     "hex/alloc",
     "lazy_static",
+    "hex",
 ]
