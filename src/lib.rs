@@ -14,6 +14,7 @@ use core::fmt;
 use core::ops::Neg;
 
 use bls12_381::hash_to_curve::{ExpandMsgXmd, HashToCurve};
+
 #[cfg(feature = "alloc")]
 use bls12_381::{multi_miller_loop, G2Prepared};
 
@@ -97,7 +98,14 @@ impl PublicKey {
     /// Verify a BLS signature
     pub fn verify(&self, message: &[u8], signature: &Signature) -> Result<(), ()> {
         let msg = hash_to_g1(message);
-        let g2_gen: &G2Prepared = &G2PREPARED_NEG_G;
+        cfg_if::cfg_if! {
+            if #[cfg(feature = "alloc")] {
+                let g2_gen:&G2Prepared = &G2PREPARED_NEG_G;
+            } else {
+                let g2_g = G2Affine::generator();
+                let g2_gen: &G2Prepared = &g2_g;
+            }
+        }
         let pk = G2Prepared::from(self.pk);
 
         let sig_g2 = (&signature.sig, g2_gen);
