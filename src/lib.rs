@@ -316,16 +316,12 @@ impl PrivateKey {
 #[inline(never)]
 pub fn verify_bls_signature(sig: &[u8], msg: &[u8], key: &[u8]) -> Result<(), ()> {
     unsafe {
-        zemu_log_stack("verify_bls***\n".as_ptr());
+        check_canary();
     }
     let sig = Signature::deserialize(sig).map_err(|_| ())?;
+    Signature::sig_zero(&sig);
     let pk = PublicKey::deserialize(key).map_err(|_| ())?;
     test_static_method();
-    let c = Signature::sig_zero(&sig);
-    if c != 0 {
-        return Err(());
-    }
-    // sig.sig_zero();
     pk.ret_zero();
     pk.verify(msg, &sig)
 }
