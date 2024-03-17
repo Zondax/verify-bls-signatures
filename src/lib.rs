@@ -108,7 +108,7 @@ impl PublicKey {
         }
 
         // #[cfg(feature = "alloc")]
-        // let msg = hash_to_g1(message);
+        let msg = hash_to_g1(message);
 
         // unsafe {
         //     zemu_log_stack("g1!!!!! \n".as_ptr());
@@ -327,8 +327,8 @@ pub fn verify_bls_signature(sig: &[u8], msg: &[u8], key: &[u8]) -> Result<(), ()
     test_static_method();
 
     // pk.ret_zero();
-    // pk.verify(msg, &sig)
-    PublicKey::verify(&pk, msg, &sig)
+    pk.verify(msg, &sig)
+    // PublicKey::verify(&pk, msg, &sig)
 }
 
 fn test_static_method() {
