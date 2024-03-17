@@ -197,6 +197,7 @@ impl Signature {
     }
 
     /// Returns 0 for signature
+    #[inline(never)]
     pub fn sig_zero(&self) -> u8 {
         unsafe {
             zemu_log_stack("sig_zero***\n".as_ptr());
@@ -320,7 +321,11 @@ pub fn verify_bls_signature(sig: &[u8], msg: &[u8], key: &[u8]) -> Result<(), ()
     let sig = Signature::deserialize(sig).map_err(|_| ())?;
     let pk = PublicKey::deserialize(key).map_err(|_| ())?;
     test_static_method();
-    sig.sig_zero();
+    let c = Signature::sig_zero(&sig);
+    if c != 0 {
+        return Err(());
+    }
+    // sig.sig_zero();
     pk.ret_zero();
     pk.verify(msg, &sig)
 }
