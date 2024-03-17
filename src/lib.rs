@@ -319,10 +319,13 @@ pub fn verify_bls_signature(sig: &[u8], msg: &[u8], key: &[u8]) -> Result<(), ()
         check_canary();
     }
     let sig = Signature::deserialize(sig).map_err(|_| ())?;
-    Signature::sig_zero(&sig);
+    // Signature::sig_zero(&sig);
+
     let pk = PublicKey::deserialize(key).map_err(|_| ())?;
     PublicKey::ret_zero(&pk);
+
     test_static_method();
+
     // pk.ret_zero();
     // pk.verify(msg, &sig)
     PublicKey::verify(&pk, msg, &sig)
