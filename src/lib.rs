@@ -1,5 +1,5 @@
 #![no_std]
-#![forbid(unsafe_code)]
+// #![forbid(unsafe_code)]
 #![forbid(missing_docs)]
 #![allow(clippy::result_unit_err)]
 
@@ -113,14 +113,22 @@ impl PublicKey {
         #[cfg(not(feature = "alloc"))]
         {
             use bls12_381::pairing;
-            zemu_log_stack("Calling generator\\x00".as_ptr());
+            unsafe {
+                zemu_log_stack("Calling generator\\x00".as_ptr());
+            }
 
             let g2 = G2Affine::generator();
-            zemu_log_stack("Generator called!***\\x00".as_ptr());
+            unsafe {
+                zemu_log_stack("Generator called!***\\x00".as_ptr());
+            }
             let lhs = pairing(&signature.sig, &g2);
-            zemu_log_stack(" paring1 called!***\\x00".as_ptr());
+            unsafe {
+                zemu_log_stack(" paring1 called!***\\x00".as_ptr());
+            }
             let rhs = pairing(&msg, &self.pk);
-            zemu_log_stack(" paring2 called!***\\x00".as_ptr());
+            unsafe {
+                zemu_log_stack(" paring2 called!***\\x00".as_ptr());
+            }
 
             if lhs == rhs {
                 Ok(())
