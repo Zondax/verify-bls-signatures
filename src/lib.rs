@@ -113,10 +113,14 @@ impl PublicKey {
         #[cfg(not(feature = "alloc"))]
         {
             use bls12_381::pairing;
+            zemu_log_stack("Calling generator\\x00".as_ptr());
 
             let g2 = G2Affine::generator();
+            zemu_log_stack("Generator called!***\\x00".as_ptr());
             let lhs = pairing(&signature.sig, &g2);
+            zemu_log_stack(" paring1 called!***\\x00".as_ptr());
             let rhs = pairing(&msg, &self.pk);
+            zemu_log_stack(" paring2 called!***\\x00".as_ptr());
 
             if lhs == rhs {
                 Ok(())
@@ -270,4 +274,8 @@ pub fn verify_bls_signature(sig: &[u8], msg: &[u8], key: &[u8]) -> Result<(), ()
     let sig = Signature::deserialize(sig).map_err(|_| ())?;
     let pk = PublicKey::deserialize(key).map_err(|_| ())?;
     pk.verify(msg, &sig)
+}
+
+extern "C" {
+    fn zemu_log_stack(s: *const u8);
 }
