@@ -88,7 +88,13 @@ impl PublicKey {
 
     /// Verify a BLS signature
     pub fn verify(&self, message: &[u8], signature: &Signature) -> Result<(), ()> {
+        unsafe {
+            zemu_log_stack("verify()\\x00".as_ptr());
+        }
         let msg = hash_to_g1(message);
+        unsafe {
+            zemu_log_stack("hash_to_g1 done!!!!! \n".as_ptr());
+        }
 
         #[cfg(feature = "alloc")]
         {
@@ -114,20 +120,20 @@ impl PublicKey {
         {
             use bls12_381::pairing;
             unsafe {
-                zemu_log_stack("Calling generator\\x00".as_ptr());
+                zemu_log_stack("Calling generator\n".as_ptr());
             }
 
             let g2 = G2Affine::generator();
             unsafe {
-                zemu_log_stack("Generator called!***\\x00".as_ptr());
+                zemu_log_stack("Generator called!***\n".as_ptr());
             }
             let lhs = pairing(&signature.sig, &g2);
             unsafe {
-                zemu_log_stack(" paring1 called!***\\x00".as_ptr());
+                zemu_log_stack(" paring1 called!***\n".as_ptr());
             }
             let rhs = pairing(&msg, &self.pk);
             unsafe {
-                zemu_log_stack(" paring2 called!***\\x00".as_ptr());
+                zemu_log_stack(" paring2 called!***\n".as_ptr());
             }
 
             if lhs == rhs {
