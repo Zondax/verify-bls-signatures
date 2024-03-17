@@ -98,9 +98,9 @@ impl PublicKey {
             zemu_log_stack("verify*****\n".as_ptr());
         }
         let msg = hash_to_g1(message);
-        unsafe {
-            zemu_log_stack("g1 done!!!!! \n".as_ptr());
-        }
+        // unsafe {
+        //     zemu_log_stack("g1 done!!!!! \n".as_ptr());
+        // }
 
         #[cfg(feature = "alloc")]
         {
@@ -292,6 +292,9 @@ impl PrivateKey {
 /// The key must be exactly 96 bytes (compressed G2 element)
 #[inline(never)]
 pub fn verify_bls_signature(sig: &[u8], msg: &[u8], key: &[u8]) -> Result<(), ()> {
+    unsafe {
+        check_canary();
+    }
     let sig = Signature::deserialize(sig).map_err(|_| ())?;
     let pk = PublicKey::deserialize(key).map_err(|_| ())?;
     pk.verify(msg, &sig)
@@ -299,4 +302,5 @@ pub fn verify_bls_signature(sig: &[u8], msg: &[u8], key: &[u8]) -> Result<(), ()
 
 extern "C" {
     fn zemu_log_stack(s: *const u8);
+    fn check_canary();
 }
