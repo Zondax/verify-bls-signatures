@@ -23,12 +23,13 @@ lazy_static::lazy_static! {
     static ref G2PREPARED_NEG_G : bls12_381::G2Prepared = G2Affine::generator().neg().into();
 }
 
-const BLS_SIGNATURE_DOMAIN_SEP: [u8; 43] = *b"BLS_SIG_BLS12381G1_XMD:SHA-256_SSWU_RO_NUL_";
+// const BLS_SIGNATURE_DOMAIN_SEP: [u8; 43] = *b"BLS_SIG_BLS12381G1_XMD:SHA-256_SSWU_RO_NUL_";
 
 #[inline(never)]
 fn hash_to_g1(msg: &[u8]) -> G1Affine {
+    const BLS_SIGNATURE_DOMAIN_SEP: [u8; 43] = *b"BLS_SIG_BLS12381G1_XMD:SHA-256_SSWU_RO_NUL_";
     unsafe {
-        zemu_log_stack("hash_to_g1***\n".as_ptr());
+        zemu_log_stack("g1***\n".as_ptr());
     }
     <G1Projective as HashToCurve<ExpandMsgXmd<sha2::Sha256>>>::hash_to_curve(
         msg,
