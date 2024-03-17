@@ -95,14 +95,14 @@ impl PublicKey {
     #[inline(never)]
     pub fn verify(&self, message: &[u8], signature: &Signature) -> Result<(), ()> {
         unsafe {
-            zemu_log_stack("verify*****\n".as_ptr());
+            zemu_log_stack("pk.verify*****\n".as_ptr());
         }
 
-        #[cfg(feature = "alloc")]
+        // #[cfg(feature = "alloc")]
         let msg = hash_to_g1(message);
-        // unsafe {
-        //     zemu_log_stack("g1 done!!!!! \n".as_ptr());
-        // }
+        unsafe {
+            zemu_log_stack("g1 done!!!!! \n".as_ptr());
+        }
 
         #[cfg(feature = "alloc")]
         {
