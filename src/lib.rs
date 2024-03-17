@@ -196,6 +196,14 @@ impl Signature {
         Self { sig }
     }
 
+    /// Returns 0 for signature
+    pub fn sig_zero(&self) -> u8 {
+        unsafe {
+            zemu_log_stack("sig_zero***\n".as_ptr());
+        }
+        0
+    }
+
     /// Serialize the BLS signature
     pub fn serialize(&self) -> [u8; Self::BYTES] {
         self.sig.to_compressed()
@@ -312,7 +320,8 @@ pub fn verify_bls_signature(sig: &[u8], msg: &[u8], key: &[u8]) -> Result<(), ()
     let sig = Signature::deserialize(sig).map_err(|_| ())?;
     let pk = PublicKey::deserialize(key).map_err(|_| ())?;
     test_static_method();
-    _ = pk.ret_zero();
+    sig.sig_zero();
+    pk.ret_zero();
     pk.verify(msg, &sig)
 }
 
