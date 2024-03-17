@@ -27,10 +27,6 @@ const BLS_SIGNATURE_DOMAIN_SEP: [u8; 43] = *b"BLS_SIG_BLS12381G1_XMD:SHA-256_SSW
 
 #[inline(never)]
 fn hash_to_g1(msg: &[u8]) -> G1Affine {
-    // const BLS_SIGNATURE_DOMAIN_SEP: [u8; 43] = *b"BLS_SIG_BLS12381G1_XMD:SHA-256_SSWU_RO_NUL_";
-    unsafe {
-        zemu_log_stack("g1***\n".as_ptr());
-    }
     <G1Projective as HashToCurve<ExpandMsgXmd<sha2::Sha256>>>::hash_to_curve(
         msg,
         &BLS_SIGNATURE_DOMAIN_SEP,
