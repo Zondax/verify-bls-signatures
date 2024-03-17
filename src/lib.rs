@@ -91,6 +91,15 @@ impl PublicKey {
         }
     }
 
+    /// Returns 0
+    #[inline(never)]
+    pub fn ret_zero(&self) -> u8 {
+        unsafe {
+            zemu_log_stack("returning_zero***\n".as_ptr());
+        }
+        0
+    }
+
     /// Verify a BLS signature
     #[inline(never)]
     pub fn verify(&self, message: &[u8], signature: &Signature) -> Result<(), ()> {
