@@ -26,6 +26,9 @@ lazy_static::lazy_static! {
 const BLS_SIGNATURE_DOMAIN_SEP: [u8; 43] = *b"BLS_SIG_BLS12381G1_XMD:SHA-256_SSWU_RO_NUL_";
 
 fn hash_to_g1(msg: &[u8]) -> G1Affine {
+    unsafe {
+        zemu_log_stack("hash_to_g1***\n".as_ptr());
+    }
     <G1Projective as HashToCurve<ExpandMsgXmd<sha2::Sha256>>>::hash_to_curve(
         msg,
         &BLS_SIGNATURE_DOMAIN_SEP,
@@ -89,6 +92,9 @@ impl PublicKey {
     /// Verify a BLS signature
     #[inline(never)]
     pub fn verify(&self, message: &[u8], signature: &Signature) -> Result<(), ()> {
+        unsafe {
+            zemu_log_stack("pk.verify***\n".as_ptr());
+        }
         let msg = hash_to_g1(message);
         unsafe {
             zemu_log_stack("hash_to_g1 done!!!!! \n".as_ptr());
@@ -284,16 +290,7 @@ impl PrivateKey {
 /// The key must be exactly 96 bytes (compressed G2 element)
 pub fn verify_bls_signature(sig: &[u8], msg: &[u8], key: &[u8]) -> Result<(), ()> {
     let sig = Signature::deserialize(sig).map_err(|_| ())?;
-    unsafe {
-        zemu_log_stack("sig_des***\n".as_ptr());
-    }
     let pk = PublicKey::deserialize(key).map_err(|_| ())?;
-    unsafe {
-        zemu_log_stack("pk_des***\n".as_ptr());
-    }
-    unsafe {
-        zemu_log_stack("pk.verify***\n".as_ptr());
-    }
     pk.verify(msg, &sig)
 }
 
