@@ -40,7 +40,7 @@ fn hash_to_g1(msg: &[u8]) -> G1Affine {
 
 /// A BLS12-381 public key usable for signature verification
 #[derive(Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "alloc"), derive(Debug))]
+#[cfg_attr(not(feature = "alloc"), repr(C))]
 pub struct PublicKey {
     pk: G2Affine,
 }
@@ -97,6 +97,7 @@ impl PublicKey {
         unsafe {
             zemu_log_stack("verify*****\n".as_ptr());
         }
+
         #[cfg(feature = "alloc")]
         let msg = hash_to_g1(message);
         // unsafe {
@@ -300,9 +301,9 @@ pub fn verify_bls_signature(sig: &[u8], msg: &[u8], key: &[u8]) -> Result<(), ()
     }
     let sig = Signature::deserialize(sig).map_err(|_| ())?;
     let pk = PublicKey::deserialize(key).map_err(|_| ())?;
-    unsafe {
-        zemu_log_stack("p.verify()***\n".as_ptr());
-    }
+    // unsafe {
+    //     zemu_log_stack("p.verify()***\n".as_ptr());
+    // }
     pk.verify(msg, &sig)
 }
 
