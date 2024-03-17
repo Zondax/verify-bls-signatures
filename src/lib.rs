@@ -101,9 +101,9 @@ impl PublicKey {
         #[cfg(feature = "alloc")]
         let msg = hash_to_g1(message);
 
-        unsafe {
-            zemu_log_stack("g1!!!!! \n".as_ptr());
-        }
+        // unsafe {
+        //     zemu_log_stack("g1!!!!! \n".as_ptr());
+        // }
 
         #[cfg(feature = "alloc")]
         {
