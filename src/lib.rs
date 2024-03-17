@@ -125,7 +125,7 @@ impl PublicKey {
         {
             use bls12_381::pairing;
             unsafe {
-                zemu_log_stack("Calling generator\n".as_ptr())Result;
+                zemu_log_stack("Calling generator\n".as_ptr());
             }
 
             let g2 = G2Affine::generator();
