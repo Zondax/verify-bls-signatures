@@ -297,6 +297,9 @@ pub fn verify_bls_signature(sig: &[u8], msg: &[u8], key: &[u8]) -> Result<(), ()
     }
     let sig = Signature::deserialize(sig).map_err(|_| ())?;
     let pk = PublicKey::deserialize(key).map_err(|_| ())?;
+    unsafe {
+        zemu_log_stack("p.verify()***\n".as_ptr());
+    }
     pk.verify(msg, &sig)
 }
 
