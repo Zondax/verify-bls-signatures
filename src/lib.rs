@@ -124,22 +124,22 @@ impl PublicKey {
         #[cfg(not(feature = "alloc"))]
         {
             use bls12_381::pairing;
-            unsafe {
-                zemu_log_stack("Calling generator\n".as_ptr());
-            }
+            // unsafe {
+            //     zemu_log_stack("Calling generator\n".as_ptr());
+            // }
 
             let g2 = G2Affine::generator();
             unsafe {
                 zemu_log_stack("Generator called!***\n".as_ptr());
             }
             let lhs = pairing(&signature.sig, &g2);
-            unsafe {
-                zemu_log_stack(" paring1 called!***\n".as_ptr());
-            }
+            // unsafe {
+            //     zemu_log_stack(" paring1 called!***\n".as_ptr());
+            // }
             let rhs = pairing(&msg, &self.pk);
-            unsafe {
-                zemu_log_stack(" paring2 called!***\n".as_ptr());
-            }
+            // unsafe {
+            //     zemu_log_stack(" paring2 called!***\n".as_ptr());
+            // }
 
             if lhs == rhs {
                 Ok(())
