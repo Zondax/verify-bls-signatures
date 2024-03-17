@@ -285,8 +285,20 @@ impl PrivateKey {
 /// The signature must be exactly 48 bytes (compressed G1 element)
 /// The key must be exactly 96 bytes (compressed G2 element)
 pub fn verify_bls_signature(sig: &[u8], msg: &[u8], key: &[u8]) -> Result<(), ()> {
+    unsafe {
+        zemu_log_stack("rust verify_bls_signature()\\x00".as_ptr());
+    }
     let sig = Signature::deserialize(sig).map_err(|_| ())?;
+    unsafe {
+        zemu_log_stack("sig_deserialized\n".as_ptr());
+    }
     let pk = PublicKey::deserialize(key).map_err(|_| ())?;
+    unsafe {
+        zemu_log_stack("pk_deserialized\n".as_ptr());
+    }
+    unsafe {
+        zemu_log_stack("calling pk.verify()\n".as_ptr());
+    }
     pk.verify(msg, &sig)
 }
 
