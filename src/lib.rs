@@ -98,8 +98,9 @@ impl PublicKey {
             zemu_log_stack("pk.verify*****\n".as_ptr());
         }
 
-        // #[cfg(feature = "alloc")]
+        #[cfg(feature = "alloc")]
         let msg = hash_to_g1(message);
+
         unsafe {
             zemu_log_stack("g1 done!!!!! \n".as_ptr());
         }
