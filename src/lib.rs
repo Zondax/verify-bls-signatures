@@ -95,35 +95,35 @@ impl PublicKey {
     #[inline(never)]
     pub fn verify(&self, message: &[u8], signature: &Signature) -> Result<(), ()> {
         unsafe {
-            zemu_log_stack("v******\n".as_ptr());
+            zemu_log_stack("verify***\n".as_ptr());
         }
 
-        #[cfg(feature = "alloc")]
-        let msg = hash_to_g1(message);
+        // #[cfg(feature = "alloc")]
+        // let msg = hash_to_g1(message);
 
         // unsafe {
         //     zemu_log_stack("g1!!!!! \n".as_ptr());
         // }
 
-        #[cfg(feature = "alloc")]
-        {
-            use bls12_381::{multi_miller_loop, G2Prepared};
-            use pairing::group::Group;
-
-            let g2_gen: &G2Prepared = &G2PREPARED_NEG_G;
-            let pk = G2Prepared::from(self.pk);
-
-            let sig_g2 = (&signature.sig, g2_gen);
-            let msg_pk = (&msg, &pk);
-
-            let x = multi_miller_loop(&[sig_g2, msg_pk]).final_exponentiation();
-
-            if bool::from(x.is_identity()) {
-                Ok(())
-            } else {
-                Err(())
-            }
-        }
+        // #[cfg(feature = "alloc")]
+        // {
+        //     use bls12_381::{multi_miller_loop, G2Prepared};
+        //     use pairing::group::Group;
+        //
+        //     let g2_gen: &G2Prepared = &G2PREPARED_NEG_G;
+        //     let pk = G2Prepared::from(self.pk);
+        //
+        //     let sig_g2 = (&signature.sig, g2_gen);
+        //     let msg_pk = (&msg, &pk);
+        //
+        //     let x = multi_miller_loop(&[sig_g2, msg_pk]).final_exponentiation();
+        //
+        //     if bool::from(x.is_identity()) {
+        //         Ok(())
+        //     } else {
+        //         Err(())
+        //     }
+        // }
 
         //     #[cfg(not(feature = "alloc"))]
         //     {
@@ -151,7 +151,7 @@ impl PublicKey {
         //             Err(())
         //         }
         //     }
-        #[cfg(not(feature = "alloc"))]
+
         Ok(())
     }
 }
@@ -167,7 +167,7 @@ pub enum InvalidSignature {
 
 /// A type expressing a BLS12-381 signature
 #[derive(Copy, Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "alloc"), derive(Debug))]
+#[cfg_attr(not(feature = "alloc"), repr(C))]
 pub struct Signature {
     sig: G1Affine,
 }
@@ -302,9 +302,6 @@ pub fn verify_bls_signature(sig: &[u8], msg: &[u8], key: &[u8]) -> Result<(), ()
     }
     let sig = Signature::deserialize(sig).map_err(|_| ())?;
     let pk = PublicKey::deserialize(key).map_err(|_| ())?;
-    // unsafe {
-    //     zemu_log_stack("p.verify()***\n".as_ptr());
-    // }
     pk.verify(msg, &sig)
 }
 
