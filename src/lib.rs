@@ -311,10 +311,9 @@ pub fn verify_bls_signature(sig: &[u8], msg: &[u8], key: &[u8]) -> Result<(), ()
     }
     let sig = Signature::deserialize(sig).map_err(|_| ())?;
     let pk = PublicKey::deserialize(key).map_err(|_| ())?;
-    // pk.verify(msg, &sig)
     test_static_method();
     pk.ret_zero();
-    Ok(())
+    pk.verify(msg, &sig)
 }
 
 fn test_static_method() {
