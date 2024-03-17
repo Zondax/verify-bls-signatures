@@ -97,6 +97,7 @@ impl PublicKey {
         unsafe {
             zemu_log_stack("verify*****\n".as_ptr());
         }
+        #[cfg(feature = "alloc")]
         let msg = hash_to_g1(message);
         // unsafe {
         //     zemu_log_stack("g1 done!!!!! \n".as_ptr());
@@ -122,32 +123,34 @@ impl PublicKey {
             }
         }
 
+        //     #[cfg(not(feature = "alloc"))]
+        //     {
+        //         use bls12_381::pairing;
+        //         // unsafe {
+        //         //     zemu_log_stack("Calling generator\n".as_ptr());
+        //         // }
+        //
+        //         let g2 = G2Affine::generator();
+        //         unsafe {
+        //             zemu_log_stack("Generator called!***\n".as_ptr());
+        //         }
+        //         let lhs = pairing(&signature.sig, &g2);
+        //         // unsafe {
+        //         //     zemu_log_stack(" paring1 called!***\n".as_ptr());
+        //         // }
+        //         let rhs = pairing(&msg, &self.pk);
+        //         // unsafe {
+        //         //     zemu_log_stack(" paring2 called!***\n".as_ptr());
+        //         // }
+        //
+        //         if lhs == rhs {
+        //             Ok(())
+        //         } else {
+        //             Err(())
+        //         }
+        //     }
         #[cfg(not(feature = "alloc"))]
-        {
-            use bls12_381::pairing;
-            // unsafe {
-            //     zemu_log_stack("Calling generator\n".as_ptr());
-            // }
-
-            let g2 = G2Affine::generator();
-            unsafe {
-                zemu_log_stack("Generator called!***\n".as_ptr());
-            }
-            let lhs = pairing(&signature.sig, &g2);
-            // unsafe {
-            //     zemu_log_stack(" paring1 called!***\n".as_ptr());
-            // }
-            let rhs = pairing(&msg, &self.pk);
-            // unsafe {
-            //     zemu_log_stack(" paring2 called!***\n".as_ptr());
-            // }
-
-            if lhs == rhs {
-                Ok(())
-            } else {
-                Err(())
-            }
-        }
+        Ok(())
     }
 }
 
@@ -300,8 +303,7 @@ pub fn verify_bls_signature(sig: &[u8], msg: &[u8], key: &[u8]) -> Result<(), ()
     unsafe {
         zemu_log_stack("p.verify()***\n".as_ptr());
     }
-    // pk.verify(msg, &sig)
-    Ok(())
+    pk.verify(msg, &sig)
 }
 
 extern "C" {
